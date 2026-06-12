@@ -1,42 +1,123 @@
 import java.util.Scanner;
 
-public class Stopwatch {
+class Stopwatch {
+    private int hours;
+    private int minutes;
+    private int seconds;
+    private boolean running;
+    private long startTime;
+    private long elapsedTime;
 
-    public static void main(String[] args) throws InterruptedException {
+    public Stopwatch() {
+        hours = 0;
+        minutes = 0;
+        seconds = 0;
+        running = false;
+        elapsedTime = 0;
+    }
 
-        int hours = 0;
-        int minutes = 0;
-        int seconds = 0;
-
-        System.out.println("Stopwatch Started...\n");
-
-        while (true) {
-
-            
-            System.out.printf("%02d:%02d:%02d%n", hours, minutes, seconds);
-
-            
-            Thread.sleep(1000);
-
-            
-            seconds++;
-
-            
-            if (seconds == 60) {
-                seconds = 0;
-                minutes++;
-            }
-
-            
-            if (minutes == 60) {
-                minutes = 0;
-                hours++;
-            }
-
-           
-            if (hours == 24) {
-                hours = 0;
-            }
+    // Start or Resume Stopwatch
+    public void start() {
+        if (!running) {
+            startTime = System.currentTimeMillis();
+            running = true;
+            System.out.println("Stopwatch Started.");
+        } else {
+            System.out.println("Stopwatch is already running.");
         }
+    }
+
+    // Stop/Pause Stopwatch
+    public void stop() {
+        if (running) {
+            elapsedTime += System.currentTimeMillis() - startTime;
+            running = false;
+            updateTime();
+            System.out.println("Stopwatch Paused.");
+        } else {
+            System.out.println("Stopwatch is not running.");
+        }
+    }
+
+    // Reset Stopwatch
+    public void reset() {
+        hours = 0;
+        minutes = 0;
+        seconds = 0;
+        elapsedTime = 0;
+        running = false;
+        System.out.println("Stopwatch Reset.");
+    }
+
+    // Update Time
+    private void updateTime() {
+        long totalMilliseconds = elapsedTime;
+
+        if (running) {
+            totalMilliseconds += System.currentTimeMillis() - startTime;
+        }
+
+        long totalSeconds = totalMilliseconds / 1000;
+
+        hours = (int) (totalSeconds / 3600);
+        minutes = (int) ((totalSeconds % 3600) / 60);
+        seconds = (int) (totalSeconds % 60);
+    }
+
+    // Display Time
+    public void displayTime() {
+        updateTime();
+        System.out.printf("Time: %02d:%02d:%02d%n",
+                hours, minutes, seconds);
+    }
+}
+
+public class DigitalStopwatch {
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        Stopwatch stopwatch = new Stopwatch();
+
+        int choice;
+
+        do {
+            System.out.println("\n===== DIGITAL STOPWATCH =====");
+            System.out.println("1. Start");
+            System.out.println("2. Stop/Pause");
+            System.out.println("3. Reset");
+            System.out.println("4. Display Time");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+
+            choice = sc.nextInt();
+
+            switch (choice) {
+                case 1:
+                    stopwatch.start();
+                    break;
+
+                case 2:
+                    stopwatch.stop();
+                    break;
+
+                case 3:
+                    stopwatch.reset();
+                    break;
+
+                case 4:
+                    stopwatch.displayTime();
+                    break;
+
+                case 5:
+                    System.out.println("Exiting Stopwatch...");
+                    break;
+
+                default:
+                    System.out.println("Invalid Choice!");
+            }
+
+        } while (choice != 5);
+
+        sc.close();
     }
 }
